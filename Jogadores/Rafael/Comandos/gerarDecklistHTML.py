@@ -9,7 +9,7 @@ html_top = """<!DOCTYPE html>
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Decklist - Raphael</title>
+  <title>Decklist - Rafael</title>
   <style>
     body { background-color: #121212; color: #f0e6d2; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 2rem; text-align: center; }
     h1 { font-size: 2rem; color: #ffd700; margin-bottom: 1rem; }
@@ -24,15 +24,15 @@ html_top = """<!DOCTYPE html>
   </style>
 </head>
 <body>
-  <h1>Decklist - Raphael</h1>
+  <h1>Decklist - Rafael</h1>
   <div class="top-nav">
-    <a href="raphael.html">⬅ Voltar para Perfil</a>
+    <a href="rafael.html">⬅ Voltar para Perfil</a>
   </div>
   <div class="deck-section">
     <div class="section-title">Comandante(s)</div>
     <div class="deck-container">
       <div class="card"><img src="Asset/Commander/Sauron, the Dark Lord.jpg" alt="Sauron, the Dark Lord" loading="lazy" /></div>
-      <div class="card"><img src="Asset/Commander/Granite Witness.jpg" alt="Granite Witness" loading="lazy" /></div>
+      <div class="card"><img src="Asset/Commander/Granite Witness, Publick Reporter.png" alt="Granite Witness" loading="lazy" /></div>
     </div>
   </div>
   <div class="deck-section">
