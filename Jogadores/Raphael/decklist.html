@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Decklist - Raphael</title>
+  <style>
+    body {
+      background-color: #121212;
+      color: #f0e6d2;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2rem;
+      color: #ffd700;
+      margin-bottom: 1rem;
+    }
+
+    .top-nav {
+      margin-bottom: 2rem;
+    }
+
+    .top-nav a {
+      background-color: #222;
+      border: 1px solid #555;
+      border-radius: 8px;
+      padding: 0.5rem 1.5rem;
+      color: #f0e6d2;
+      text-decoration: none;
+      font-size: 1rem;
+      transition: background 0.3s;
+    }
+
+    .top-nav a:hover {
+      background-color: #f0e6d2;
+      color: #121212;
+    }
+
+    .deck-section {
+      margin-bottom: 3rem;
+    }
+
+    .deck-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1.5rem;
+    }
+
+    .card {
+      width: 223px;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 0 10px #000;
+    }
+
+    .card img {
+      width: 100%;
+      display: block;
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+      color: #ffcc00;
+      margin-bottom: 1.5rem;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Decklist - Raphael</h1>
+
+  <div class="top-nav">
+    <a href="raphael.html">⬅ Voltar para Perfil</a>
+  </div>
+
+  <div class="deck-section">
+    <div class="section-title">Comandante(s)</div>
+    <div class="deck-container">
+      <div class="card">
+        <img src="Asset/Commander/Atla Palani, Nest Tender.jpg" alt="Atla Palani, Nest Tender" />
+      </div>
+      <div class="card">
+        <img src="Asset/Commander/Piper Wright, Publick Reporter.png" alt="Piper Wright, Publick Reporter" />
+      </div>
+    </div>
+  </div>
+
+  <div class="deck-section">
+    <div class="section-title">Cartas do Deck</div>
+    <div class="deck-container" id="deck-container">
+      <!-- Cartas do deck serão carregadas aqui dinamicamente -->
+    </div>
+  </div>
+
+  <script>
+    fetch("/cartas")
+      .then(res => res.json())
+      .then(arquivos => {
+        const container = document.getElementById("deck-container");
+        arquivos.forEach(arquivo => {
+          const nome = arquivo.split('.').slice(0, -1).join('.');
+          const cardDiv = document.createElement("div");
+          cardDiv.className = "card";
+
+          const img = document.createElement("img");
+          img.src = `/Asset/Decklist/${arquivo}`;
+          img.alt = nome;
+
+          cardDiv.appendChild(img);
+          container.appendChild(cardDiv);
+        });
+      })
+      .catch(err => {
+        console.error(err);
+        const container = document.getElementById("deck-container");
+        container.innerHTML = '<p style="color: #f88;">Erro ao carregar cartas do deck.</p>';
+      });
+  </script>
+
+</body>
+</html>
