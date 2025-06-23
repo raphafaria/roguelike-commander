@@ -119,23 +119,22 @@
 
     async function enviarCartaParaJogador() {
       const jogador = document.getElementById('jogador-select').value;
-      const response = await fetch('/api/registrar-booster', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch(`/adicionar-carta`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           jogador,
+          carta: cardSelecionada,
           booster: tipoBoosterSelecionado,
-          cartas: todasCartasDoBooster,
-          escolhida: cardSelecionada.nome
+          todasCartas: todasCartasDoBooster
         })
       });
 
-      if (response.ok) {
-        alert('Carta enviada com sucesso!');
+      if (res.ok) {
+        alert("Carta enviada!");
         fecharModal();
       } else {
-        const erro = await response.json();
-        alert('Erro: ' + erro.mensagem);
+        alert("Erro ao enviar carta.");
       }
     }
 
@@ -204,9 +203,6 @@
       resultado.innerHTML = `<div class="booster-title">Resultado do ${tipo}</div><div class="card-container"></div>`;
       const container = resultado.querySelector('.card-container');
 
-      todasCartasDoBooster = cartas;
-      tipoBoosterSelecionado = tipo;
-
       cartas.forEach(carta => {
         const cardDiv = document.createElement("div");
         cardDiv.className = "card";
@@ -218,6 +214,8 @@
           document.getElementById('carta-selecionada').innerText = `Carta: ${carta.nome}`;
           document.getElementById('escolher-jogador-modal').style.display = 'block';
           cardSelecionada = carta;
+          tipoBoosterSelecionado = tipo;
+          todasCartasDoBooster = cartas;
         };
         container.appendChild(cardDiv);
       });
