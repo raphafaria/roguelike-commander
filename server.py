@@ -1,42 +1,52 @@
-from flask import Flask, send_from_directory
+from flask import Flask, jsonify, send_from_directory, abort
 import os
 
 app = Flask(__name__, static_folder='.', static_url_path='')
 
-# Caminhos principais
-BASE_DIR = os.path.abspath('.')  # raiz do projeto (roguelike-tools)
-RAPHAEL_DIR = os.path.join(BASE_DIR, 'Jogadores', 'Raphael')
+BASE_DIR = os.getcwd()
+JOGADORES_PATH = os.path.join(BASE_DIR, 'Jogadores')
 
-# Serve o index.html do site principal
+# Serve index.html da raiz
 @app.route('/')
 def index():
-    return send_from_directory(BASE_DIR, 'index.html')
+    return send_from_directory('.', 'index.html')
 
-# Serve qualquer arquivo estático da raiz (css, js, img, etc)
+# Serve jogadores.html da raiz
+@app.route('/jogadores.html')
+def jogadores():
+    return send_from_directory('.', 'jogadores.html')
+
+# Serve arquivos dentro de /Jogadores/{jogador}/
+@app.route('/jogadores/<jogador>/<path:filename>')
+def serve_jogador_file(jogador, filename):
+    jogador_dir = os.path.join(JOGADORES_PATH, jogador)
+    if os.path.isdir(jogador_dir):
+        # Prevenir path traversal
+        full_path = os.path.normpath(os.path.join(jogador_dir, filename))
+        if full_path.startswith(jogador_dir) and os.path.isfile(full_path):
+            return send_from_directory(jogador_dir, filename)
+    abort(404)
+
+# Serve as cartas do deck do Raphael
+@app.route('/Jogadores/Raphael/Asset/Decklist/<path:filename>')
+def serve_decklist_card(filename):
+    deck_path = os.path.join(JOGADORES_PATH, 'Raphael', 'Asset', 'Decklist')
+    return send_from_directory(deck_path, filename)
+
+# Serve as cartas do comandante do Raphael
+@app.route('/Jogadores/Raphael/Asset/Commander/<path:filename>')
+def serve_commander_card(filename):
+    commander_path = os.path.join(JOGADORES_PATH, 'Raphael', 'Asset', 'Commander')
+    return send_from_directory(commander_path, filename)
+
+# Catch-all para servir outros arquivos estáticos na raiz ou subpastas
 @app.route('/<path:path>')
-def static_files(path):
-    # Primeiro tenta servir da raiz
-    arquivo = os.path.join(BASE_DIR, path)
-    if os.path.isfile(arquivo):
+def serve_static(path):
+    static_path = os.path.join(BASE_DIR, path)
+    if os.path.isfile(static_path):
         return send_from_directory(BASE_DIR, path)
-    # Depois tenta servir da pasta do Raphael (ex: Jogadores/Raphael/...)
-    arquivo_raphael = os.path.join(RAPHAEL_DIR, path)
-    if os.path.isfile(arquivo_raphael):
-        return send_from_directory(RAPHAEL_DIR, path)
-    # Se não achar, retorna 404 simples
-    return "Arquivo não encontrado", 404
-
-# Endpoint para listar cartas (json) - opcional se quiser API dedicada
-@app.route('/cartas')
-def cartas():
-    deck_path = os.path.join(RAPHAEL_DIR, 'Asset', 'Decklist')
-    arquivos = sorted([
-        f for f in os.listdir(deck_path)
-        if f.lower().endswith(('.jpg', '.png'))
-    ])
-    return {"cartas": arquivos}
+    abort(404)
 
 if __name__ == '__main__':
-    import os
     port = int(os.environ.get('PORT', 5000))
     app.run(debug=True, host='0.0.0.0', port=port)
