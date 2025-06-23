@@ -1,4 +1,10 @@
-<!DOCTYPE html>
+import os
+
+decklist_path = os.path.join("..", "Asset", "Decklist")
+output_path = os.path.join("..", "decklist.html")
+
+# Cabeçalho do HTML
+html_top = """<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
@@ -33,12 +39,27 @@
   <div class="deck-section">
     <div class="section-title">Cartas do Deck</div>
     <div class="deck-container">
-      <div class="card"><img src="Asset/Decklist/Ancient Tomb.jpg" alt="Ancient Tomb" loading="lazy" /></div>
-      <div class="card"><img src="Asset/Decklist/Corpsejack Menace.jpg" alt="Corpsejack Menace" loading="lazy" /></div>
-      <div class="card"><img src="Asset/Decklist/Disrupt Decorum.jpg" alt="Disrupt Decorum" loading="lazy" /></div>
-      <div class="card"><img src="Asset/Decklist/Siege-Gang Commander.jpg" alt="Siege-Gang Commander" loading="lazy" /></div>
-      <div class="card"><img src="Asset/Decklist/Simian Spirit Guide.jpg" alt="Simian Spirit Guide" loading="lazy" /></div>
+"""
+
+# Rodapé do HTML
+html_bottom = """
     </div>
   </div>
 </body>
-</html>
+</html>"""
+
+# Gera blocos de imagem
+blocos = []
+for filename in sorted(os.listdir(decklist_path)):
+    if filename.lower().endswith(('.jpg', '.png')):
+        path = f'Asset/Decklist/{filename}'
+        alt = os.path.splitext(filename)[0]
+        blocos.append(f'      <div class="card"><img src="{path}" alt="{alt}" loading="lazy" /></div>')
+
+# Escreve o HTML final
+with open(output_path, "w", encoding="utf-8") as f:
+    f.write(html_top)
+    f.write("\n".join(blocos))
+    f.write(html_bottom)
+
+print("✅ decklist.html atualizado com sucesso!")

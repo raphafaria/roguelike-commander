@@ -32,7 +32,7 @@ html_top = """<!DOCTYPE html>
     <div class="section-title">Comandante(s)</div>
     <div class="deck-container">
       <div class="card"><img src="Asset/Commander/Sauron, the Dark Lord.jpg" alt="Sauron, the Dark Lord" loading="lazy" /></div>
-      <div class="card"><img src="Asset/Commander/Granite Witness, Publick Reporter.png" alt="Granite Witness" loading="lazy" /></div>
+      <div class="card"><img src="Asset/Commander/Granite Witness.jpg" alt="Granite Witness" loading="lazy" /></div>
     </div>
   </div>
   <div class="deck-section">

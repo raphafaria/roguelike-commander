@@ -1,9 +1,15 @@
-<!DOCTYPE html>
+import os
+
+decklist_path = os.path.join("..", "Asset", "Decklist")
+output_path = os.path.join("..", "decklist.html")
+
+# Cabeçalho do HTML
+html_top = """<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Decklist - Pastor</title>
+  <title>Decklist - Peixoto</title>
   <style>
     body { background-color: #121212; color: #f0e6d2; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 2rem; text-align: center; }
     h1 { font-size: 2rem; color: #ffd700; margin-bottom: 1rem; }
@@ -18,27 +24,40 @@
   </style>
 </head>
 <body>
-  <h1>Decklist - Pastor</h1>
+  <h1>Decklist - Peixoto</h1>
   <div class="top-nav">
-    <a href="pastor.html">⬅ Voltar para Perfil</a>
+    <a href="peixoto.html">⬅ Voltar para Perfil</a>
   </div>
   <div class="deck-section">
     <div class="section-title">Comandante(s)</div>
     <div class="deck-container">
-      <div class="card"><img src="Asset/Commander/Korvold, Fae-Cursed King.jpg" alt="Korvold, Fae-Cursed King" loading="lazy" /></div>
-      <div class="card"><img src="Asset/Commander/Alchemist's Talent.jpg" alt="Alchemist's Talent" loading="lazy" /></div>
-      <div class="card"><img src="Asset/Commander/Agent of the Iron Throne.jpg" alt="Agent of the Iron Throne" loading="lazy" /></div>
+      <div class="card"><img src="Asset/Commander/Aragorn, the Uniter.jpg" alt="Aragorn, the Uniter" loading="lazy" /></div>
     </div>
   </div>
   <div class="deck-section">
     <div class="section-title">Cartas do Deck</div>
     <div class="deck-container">
-      <div class="card"><img src="Asset/Decklist/Ancient Tomb.jpg" alt="Ancient Tomb" loading="lazy" /></div>
-      <div class="card"><img src="Asset/Decklist/Corpsejack Menace.jpg" alt="Corpsejack Menace" loading="lazy" /></div>
-      <div class="card"><img src="Asset/Decklist/Disrupt Decorum.jpg" alt="Disrupt Decorum" loading="lazy" /></div>
-      <div class="card"><img src="Asset/Decklist/Siege-Gang Commander.jpg" alt="Siege-Gang Commander" loading="lazy" /></div>
-      <div class="card"><img src="Asset/Decklist/Simian Spirit Guide.jpg" alt="Simian Spirit Guide" loading="lazy" /></div>
+"""
+
+# Rodapé do HTML
+html_bottom = """
     </div>
   </div>
 </body>
-</html>
+</html>"""
+
+# Gera blocos de imagem
+blocos = []
+for filename in sorted(os.listdir(decklist_path)):
+    if filename.lower().endswith(('.jpg', '.png')):
+        path = f'Asset/Decklist/{filename}'
+        alt = os.path.splitext(filename)[0]
+        blocos.append(f'      <div class="card"><img src="{path}" alt="{alt}" loading="lazy" /></div>')
+
+# Escreve o HTML final
+with open(output_path, "w", encoding="utf-8") as f:
+    f.write(html_top)
+    f.write("\n".join(blocos))
+    f.write(html_bottom)
+
+print("✅ decklist.html atualizado com sucesso!")
