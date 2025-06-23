@@ -42,7 +42,6 @@
       border-radius: 6px;
       padding: 0.5rem;
       width: 223px;
-      cursor: pointer;
     }
     .card img {
       width: 100%;
@@ -51,17 +50,6 @@
     .card p {
       margin-top: 0.5rem;
       font-size: 0.9rem;
-    }
-    #escolher-jogador-modal {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: #222;
-      padding: 1.5rem;
-      border-radius: 10px;
-      color: white;
-      z-index: 1000;
     }
   </style>
 </head>
@@ -91,53 +79,7 @@
 
   <div class="booster" id="resultado"></div>
 
-  <div id="escolher-jogador-modal" style="display:none;">
-    <p id="carta-selecionada"></p>
-    <label for="jogador-select">Escolher jogador:</label>
-    <select id="jogador-select">
-      <option value="Raphael">Raphael</option>
-      <option value="Rafael">Rafael</option>
-      <option value="Demis">Demis</option>
-      <option value="Vini">Vini</option>
-      <option value="Peixoto">Peixoto</option>
-      <option value="Pastor">Pastor</option>
-    </select>
-    <br /><br />
-    <button onclick="enviarCartaParaJogador()">Enviar para Deck</button>
-    <button onclick="fecharModal()">Cancelar</button>
-  </div>
-
   <script>
-    let cardSelecionada = null;
-    let tipoBoosterSelecionado = null;
-    let todasCartasDoBooster = [];
-
-    function fecharModal() {
-      document.getElementById('escolher-jogador-modal').style.display = 'none';
-      cardSelecionada = null;
-    }
-
-    async function enviarCartaParaJogador() {
-      const jogador = document.getElementById('jogador-select').value;
-      const res = await fetch(`/adicionar-carta`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          jogador,
-          carta: cardSelecionada,
-          booster: tipoBoosterSelecionado,
-          todasCartas: todasCartasDoBooster
-        })
-      });
-
-      if (res.ok) {
-        alert("Carta enviada!");
-        fecharModal();
-      } else {
-        alert("Erro ao enviar carta.");
-      }
-    }
-
     async function gerarBooster(tipo) {
       const resultado = document.getElementById('resultado');
       resultado.innerHTML = `<p>Gerando ${tipo}...</p>`;
@@ -193,6 +135,7 @@
           ];
         }
 
+        // Para cada carta local, buscar imagem da Scryfall (opcional: cache futuro)
         for (let carta of cartas) {
           const res = await fetch(`https://api.scryfall.com/cards/named?exact=${encodeURIComponent(carta.nome)}`);
           const data = await res.json();
@@ -204,22 +147,15 @@
       const container = resultado.querySelector('.card-container');
 
       cartas.forEach(carta => {
-        const cardDiv = document.createElement("div");
-        cardDiv.className = "card";
-        cardDiv.innerHTML = `
-          <img src="${carta.imagem}" alt="${carta.nome}" />
-          <p>${carta.nome} [${carta.raridade}]</p>
+        container.innerHTML += `
+          <div class="card">
+            <img src="${carta.imagem}" alt="${carta.nome}" />
+            <p>${carta.nome} [${carta.raridade}]</p>
+          </div>
         `;
-        cardDiv.onclick = () => {
-          document.getElementById('carta-selecionada').innerText = `Carta: ${carta.nome}`;
-          document.getElementById('escolher-jogador-modal').style.display = 'block';
-          cardSelecionada = carta;
-          tipoBoosterSelecionado = tipo;
-          todasCartasDoBooster = cartas;
-        };
-        container.appendChild(cardDiv);
       });
     }
+
   </script>
 </body>
 </html>

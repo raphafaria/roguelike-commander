@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Histórico de Boosters - Pastor</title>
+  <style>
+    body {
+      background-color: #121212;
+      color: #f0f0f0;
+      font-family: Arial, sans-serif;
+      padding: 2rem;
+    }
+    h1 {
+      color: #ffd700;
+      text-align: center;
+    }
+    .registro {
+      background: #1e1e1e;
+      border-left: 4px solid #ffd700;
+      margin-bottom: 1.5rem;
+      padding: 1rem;
+      border-radius: 8px;
+    }
+    .registro h2 {
+      margin: 0;
+      color: #ffa500;
+    }
+    .registro small {
+      color: #ccc;
+    }
+    .cartas {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+    .cartas span {
+      background: #2a2a2a;
+      padding: 0.3rem 0.6rem;
+      border-radius: 5px;
+      font-size: 0.9rem;
+    }
+    .escolhida {
+      margin-top: 0.5rem;
+      color: #90ee90;
+    }
+    a {
+      color: #fff;
+      display: block;
+      text-align: center;
+      margin-bottom: 2rem;
+      text-decoration: none;
+      background: #333;
+      padding: 0.8rem;
+      border-radius: 8px;
+    }
+    a:hover {
+      background: #444;
+    }
+  </style>
+</head>
+<body>
+  <a href="pastor.html">⬅ Voltar para Perfil</a>
+  <h1>Histórico de Boosters - Pastor</h1>
+
+  <div id="historico"></div>
+
+  <script>
+    fetch("/Jogadores/Pastor/Comandos/historico_boosters.json")
+      .then(res => res.json())
+      .then(data => {
+        const container = document.getElementById("historico");
+
+        if (!data.length) {
+          container.innerHTML = "<p>Nenhum booster registrado ainda.</p>";
+          return;
+        }
+
+        data.reverse().forEach(entry => {
+          const div = document.createElement("div");
+          div.className = "registro";
+
+          div.innerHTML = `
+            <h2>${entry.tipo}</h2>
+            <small>${entry.data}</small>
+            <div class="cartas">
+              ${entry.cartas.map(nome => `<span>${nome}</span>`).join('')}
+            </div>
+            <div class="escolhida">
+              ${entry.escolhida === "LIGA_COIN" ?
+                `🏅 ${entry.quantidade} Liga Coin adicionada` :
+                `✅ Escolhida: <strong>${entry.escolhida}</strong>`}
+            </div>
+          `;
+
+          container.appendChild(div);
+        });
+      })
+      .catch(err => {
+        console.error(err);
+        document.getElementById("historico").innerHTML =
+          "<p style='color: #f88;'>Erro ao carregar o histórico.</p>";
+      });
+  </script>
+</body>
+</html>
