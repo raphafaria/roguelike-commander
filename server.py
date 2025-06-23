@@ -23,6 +23,7 @@ def jogadores():
     return send_from_directory(BASE_DIR, 'jogadores.html')
 
 # Serve páginas dos jogadores
+@app.route('/jogadores/<jogador>/<filename>')
 @app.route('/Jogadores/<jogador>/<filename>')
 def serve_jogador_page(jogador, filename):
     jogador_path = os.path.join(BASE_DIR, 'Jogadores', jogador)
