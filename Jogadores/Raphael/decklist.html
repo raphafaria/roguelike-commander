@@ -110,6 +110,7 @@
           const img = document.createElement("img");
           img.src = `/Asset/Decklist/${arquivo}`;
           img.alt = nome;
+          img.loading = "lazy"; // carregamento sob demanda
 
           cardDiv.appendChild(img);
           container.appendChild(cardDiv);

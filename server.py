@@ -1,12 +1,23 @@
-from flask import Flask, jsonify, send_from_directory, abort
+from flask import Flask, jsonify, send_from_directory, abort, make_response, send_file
 import os
+from datetime import timedelta
 
 app = Flask(__name__, static_folder='.', static_url_path='')
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 
-# Caminho para as cartas do Raphael
+# Caminhos para as imagens
 DECK_PATH = os.path.join(BASE_DIR, "Jogadores", "Raphael", "Asset", "Decklist")
 COMMANDER_PATH = os.path.join(BASE_DIR, "Jogadores", "Raphael", "Asset", "Commander")
+
+# Função para servir arquivos com cache
+def send_cached_file(directory, filename, max_age=86400):
+    try:
+        file_path = os.path.join(directory, filename)
+        response = make_response(send_file(file_path))
+        response.headers['Cache-Control'] = f'public, max-age={max_age}'
+        return response
+    except Exception:
+        abort(404)
 
 @app.route('/')
 def index():
@@ -16,7 +27,6 @@ def index():
 def jogadores():
     return send_from_directory(BASE_DIR, 'jogadores.html')
 
-# Serve arquivos dentro da pasta Jogadores/<jogador>
 @app.route('/jogadores/<jogador>/<filename>')
 @app.route('/Jogadores/<jogador>/<filename>')
 def serve_jogador_html(jogador, filename):
@@ -27,7 +37,6 @@ def serve_jogador_html(jogador, filename):
     else:
         abort(404)
 
-# Endpoint para lista JSON das cartas do deck do Raphael
 @app.route('/cartas')
 def cartas():
     try:
@@ -39,17 +48,14 @@ def cartas():
     except Exception:
         abort(500)
 
-# Serve imagens das cartas do decklist
 @app.route('/Asset/Decklist/<path:filename>')
 def serve_decklist_card(filename):
-    return send_from_directory(DECK_PATH, filename)
+    return send_cached_file(DECK_PATH, filename)
 
-# Serve imagens dos comandantes
 @app.route('/Asset/Commander/<path:filename>')
 def serve_commander(filename):
-    return send_from_directory(COMMANDER_PATH, filename)
+    return send_cached_file(COMMANDER_PATH, filename)
 
-# Serve outros arquivos estáticos na raiz do projeto, incluindo a pasta Asset e node_modules
 @app.route('/<path:path>')
 def catch_all(path):
     full_path = os.path.join(BASE_DIR, path)
