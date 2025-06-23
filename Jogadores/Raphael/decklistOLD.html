@@ -17,7 +17,27 @@
     h1 {
       font-size: 2rem;
       color: #ffd700;
+      margin-bottom: 1rem;
+    }
+
+    .top-nav {
       margin-bottom: 2rem;
+    }
+
+    .top-nav a {
+      background-color: #222;
+      border: 1px solid #555;
+      border-radius: 8px;
+      padding: 0.5rem 1.5rem;
+      color: #f0e6d2;
+      text-decoration: none;
+      font-size: 1rem;
+      transition: background 0.3s;
+    }
+
+    .top-nav a:hover {
+      background-color: #f0e6d2;
+      color: #121212;
     }
 
     .deck-section {
@@ -48,54 +68,60 @@
       color: #ffcc00;
       margin-bottom: 1.5rem;
     }
-
-    .bottom-nav {
-      margin-top: 3rem;
-    }
-
-    .bottom-nav a {
-      background-color: #222;
-      border: 1px solid #555;
-      border-radius: 8px;
-      padding: 0.5rem 1.5rem;
-      color: #f0e6d2;
-      text-decoration: none;
-      font-size: 1rem;
-      transition: background 0.3s;
-    }
-
-    .bottom-nav a:hover {
-      background-color: #f0e6d2;
-      color: #121212;
-    }
   </style>
 </head>
 <body>
 
   <h1>Decklist - Raphael</h1>
 
+  <div class="top-nav">
+    <a href="raphael.html">⬅ Voltar para Perfil</a>
+  </div>
+
   <div class="deck-section">
     <div class="section-title">Comandante(s)</div>
     <div class="deck-container">
       <div class="card">
-        <img src="Asset/Commander/Atla Palani, Nest Tender.jpg" alt="Atla Palani, Nest Tender">
+        <img src="Asset/Commander/Atla Palani, Nest Tender.jpg" alt="Atla Palani, Nest Tender" />
       </div>
       <div class="card">
-        <img src="Asset/Commander/Piper Wright, Publick Reporter.png" alt="Piper Wright, Publick Reporter">
+        <img src="Asset/Commander/Piper Wright, Publick Reporter.png" alt="Piper Wright, Publick Reporter" />
       </div>
     </div>
   </div>
 
   <div class="deck-section">
     <div class="section-title">Cartas do Deck</div>
-    <div class="deck-container">
-      <!-- Adicione outras cartas do deck aqui -->
+    <div class="deck-container" id="deck-container">
+      <!-- Cartas do deck serão carregadas aqui dinamicamente -->
     </div>
   </div>
 
-  <div class="bottom-nav">
-    <a href="perfil.html">⬅ Voltar para Perfil</a>
-  </div>
+  <script>
+    fetch("/cartas")
+      .then(res => res.json())
+      .then(arquivos => {
+        const container = document.getElementById("deck-container");
+        arquivos.forEach(arquivo => {
+          const nome = arquivo.split('.').slice(0, -1).join('.');
+          const cardDiv = document.createElement("div");
+          cardDiv.className = "card";
+
+          const img = document.createElement("img");
+          img.src = `/Asset/Decklist/${arquivo}`;
+          img.alt = nome;
+          img.loading = "lazy"; // carregamento sob demanda
+
+          cardDiv.appendChild(img);
+          container.appendChild(cardDiv);
+        });
+      })
+      .catch(err => {
+        console.error(err);
+        const container = document.getElementById("deck-container");
+        container.innerHTML = '<p style="color: #f88;">Erro ao carregar cartas do deck.</p>';
+      });
+  </script>
 
 </body>
 </html>
